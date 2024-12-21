@@ -4,6 +4,7 @@
 #include <format>
 #include <iostream>
 #include <vector>
+#include <string>
 
 /**
  * @brief Enumerates the possible states of the game.
@@ -34,30 +35,29 @@ private:
 	char m_Turn;
 
 	void InitializeState();
-	void ClearPits(const char& pit);
-	void ClearPits(const char& start, const char& stop);
-	void MakeMove(const char& move);
-	void ClassicalMancalaRuleset(const char& move);
-	void TurkishMancalaRuleset(const char& move);
+	void ClearPits(const char &pit);
+	void ClearPits(const char &start, const char &stop);
+	void MakeMove(const char &move);
+	void ClassicalMancalaRuleset(const char &move);
+	void TurkishMancalaRuleset(const char &move);
 
 	std::vector<char> LegalMoves() const;
-	State NextState(const char& move) const;
-	char TotalStones(const char& start, const char& stop) const;
-	char OppositePit(const char& pit);
+	std::string GetStateString(int depth) const;
+	State NextState(const char &move) const;
+	char TotalStones(const char &start, const char &stop) const;
+	char OppositePit(const char &pit);
 	char RandomMove();
 	char GetWinner() const;
 
-	bool IsLegal(const char& move);
-
+	bool IsLegal(const char &move);
 
 	GameStateEnum GameState() const;
-
 
 public:
 	State();
 	~State();
 	void MutateBoard(const std::vector<char> &board);
 	void Print();
-	void ChangeTurn(const char& turn);
-	void ChangeRuleset(const char& ruleset);
+	void ChangeTurn(const char &turn);
+	void ChangeRuleset(const char &ruleset);
 };

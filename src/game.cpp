@@ -1,17 +1,17 @@
 #include "game.h"
+#include "serializer.h"
 
 // if you are on windows change "clear" to "cls"
 #define CLEAR_COMMAND "clear"
 
-
 Game::Game()
 {
     m_Player1 = MINIMAX;
-    m_Player2 = MINIMAX; 
+    m_Player2 = MINIMAX;
     m_State = new State();
 
-    cnf_RULESET = 0; // Classical ruleset
-    cnf_TIME_LIMIT = 100; // 100ms
+    cnf_RULESET = 0;              // Classical ruleset
+    cnf_TIME_LIMIT = 100;         // 100ms
     cnf_OPENING_MOVE_ALLOWED = 0; // Allow
 
     ReadSettings();
@@ -25,7 +25,6 @@ Game::~Game()
 void Game::ReadSettings()
 {
 
-    
     // Ruleset settings [Classical, Turkish]
     {
         std::ifstream configFile;
@@ -36,12 +35,12 @@ void Game::ReadSettings()
             std::ofstream _configFile;
             std::filesystem::create_directory("settings");
             _configFile.open("./settings/default_ruleset.dat", std::ios::binary);
-            _configFile.write((char*)&cnf_RULESET, sizeof(cnf_RULESET));
+            _configFile.write((char *)&cnf_RULESET, sizeof(cnf_RULESET));
             _configFile.close();
         }
         else
         {
-            configFile.read((char*)&cnf_RULESET, sizeof(cnf_RULESET));
+            configFile.read((char *)&cnf_RULESET, sizeof(cnf_RULESET));
             configFile.close();
         }
     }
@@ -55,12 +54,12 @@ void Game::ReadSettings()
         {
             std::ofstream _configFile;
             _configFile.open("./settings/minimax_time_limit.dat", std::ios::binary);
-            _configFile.write((char*)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
+            _configFile.write((char *)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
             _configFile.close();
         }
         else
         {
-            configFile.read((char*)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
+            configFile.read((char *)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
             configFile.close();
         }
     }
@@ -74,12 +73,12 @@ void Game::ReadSettings()
         {
             std::ofstream _configFile;
             _configFile.open("./settings/opening_move_permission.dat", std::ios::binary);
-            _configFile.write((char*)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
+            _configFile.write((char *)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
             _configFile.close();
         }
         else
         {
-            configFile.read((char*)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
+            configFile.read((char *)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
             configFile.close();
         }
     }
@@ -161,7 +160,7 @@ void Game::Initialize()
         m_State = new State();
         m_State->ChangeTurn((char)turn);
 
-        system(CLEAR_COMMAND); 
+        system(CLEAR_COMMAND);
     }
 
     m_State->m_Ruleset = cnf_RULESET;
@@ -179,7 +178,8 @@ void Game::Settings()
 
     switch (option)
     {
-    case 0: {
+    case 0:
+    {
         system(CLEAR_COMMAND);
         std::cout << "0. Classical Mancala Ruleset\n1. Turkish Mancala Ruleset\n\n> ";
         int _option;
@@ -187,33 +187,40 @@ void Game::Settings()
 
         switch (_option)
         {
-        case 0: {
+        case 0:
+        {
             cnf_RULESET = 0;
             {
                 std::ofstream configFile;
                 configFile.open("./settings/default_ruleset.dat", std::ios::binary);
-                configFile.write((char*)&cnf_RULESET, sizeof(cnf_RULESET));
+                configFile.write((char *)&cnf_RULESET, sizeof(cnf_RULESET));
                 configFile.close();
             }
             Settings();
-        }; break;
-        case 1: {
+        };
+        break;
+        case 1:
+        {
             cnf_RULESET = 1;
             {
                 std::ofstream configFile;
                 configFile.open("./settings/default_ruleset.dat", std::ios::binary);
-                configFile.write((char*)&cnf_RULESET, sizeof(cnf_RULESET));
+                configFile.write((char *)&cnf_RULESET, sizeof(cnf_RULESET));
                 configFile.close();
             }
             Settings();
-        }; break;
-        default: {
+        };
+        break;
+        default:
+        {
             Settings();
-        }; break;
+        };
+        break;
         }
-
-    }; break;
-    case 1: {
+    };
+    break;
+    case 1:
+    {
         system(CLEAR_COMMAND);
         std::cout << "Enter the time limit in miliseconds\n\n> ";
         int _value;
@@ -223,13 +230,15 @@ void Game::Settings()
         {
             std::ofstream configFile;
             configFile.open("./settings/minimax_time_limit.dat", std::ios::binary);
-            configFile.write((char*)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
+            configFile.write((char *)&cnf_TIME_LIMIT, sizeof(cnf_TIME_LIMIT));
             configFile.close();
         }
 
         Settings();
-    }; break;
-    case 2: {
+    };
+    break;
+    case 2:
+    {
         system(CLEAR_COMMAND);
         std::cout << "0. Allow\n1. Don't Allow\n\n> ";
         int _value;
@@ -239,19 +248,23 @@ void Game::Settings()
         {
             std::ofstream configFile;
             configFile.open("./settings/opening_move_permission.dat", std::ios::binary);
-            configFile.write((char*)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
+            configFile.write((char *)&cnf_OPENING_MOVE_ALLOWED, sizeof(cnf_OPENING_MOVE_ALLOWED));
             configFile.close();
         }
 
         Settings();
-
-    }; break;
-    case 3: {
+    };
+    break;
+    case 3:
+    {
         Menu();
-    }; break;
-    default: {
+    };
+    break;
+    default:
+    {
         Settings();
-    };break;
+    };
+    break;
     }
 }
 
@@ -296,7 +309,7 @@ void Game::GetPlayerMove()
     {
         m_State->MakeMove(move); // Make the move if it is legal
         history.push_back(move); // Record the move in the history
-        m_State->Print(); // Print the updated game state
+        m_State->Print();        // Print the updated game state
     }
     else
     {
@@ -312,19 +325,56 @@ void Game::GetAIMove(AgentEnum agent)
         std::cout << "[AI] Player" << int(m_State->m_Turn + 1) << ": ";
 
         float duration = 0.0; // Initialize duration for time limit
-        char depth = 5; // Initial depth for minimax search
-        char bestMove = -1; // Initialize best move
+        char depth = 5;       // Initial depth for minimax search
+        char bestMove = -1;   // Initialize best move
 
         // Perform iterative deepening search until time limit is reached
         while (duration < cnf_TIME_LIMIT && depth < 80)
         {
-            Timer timer(&duration); // Start timer
+            Timer timer(&duration);                      // Start timer
             bestMove = engine.BestMove(*m_State, depth); // Get best move using minimax with current depth
-            depth++; // Increment depth for next iteration
+            depth++;                                     // Increment depth for next iteration
         }
 
         // Get best move using final depth
-        bestMove = engine.BestMove(*m_State, depth);
+        {
+            if (!std::filesystem::exists("db/"))
+            {
+                std::filesystem::create_directory("db");
+            }
+
+            if (!std::filesystem::exists("db/cache/"))
+            {
+                std::filesystem::create_directory("db/cache");
+            }
+
+            if (!std::filesystem::exists("db/cache/positions.dat"))
+            {
+                std::ofstream temp("db/cache/positions.dat");
+                temp.close();
+            }
+
+            std::unordered_map<unsigned long long int, char>
+                positions;
+
+            hafif::deserialize_umap_from_file(positions, "db/cache/positions.dat");
+
+            std::string position_str = m_State->GetStateString(depth);
+            std::hash<std::string> hash_fn;
+            auto position_hash = hash_fn(position_str);
+
+            if (positions.find(position_hash) != positions.end())
+            {
+                bestMove = positions[position_hash];
+            }
+            else
+            {
+
+                bestMove = engine.BestMove(*m_State, depth);
+                positions[position_hash] = bestMove;
+                hafif::serialize_umap_to_file(positions, "db/cache/positions.dat");
+            }
+        }
 
         // Make the best move in the game
         if (!cnf_OPENING_MOVE_ALLOWED && (history.size() == 1 && history.at(0) == 2))
@@ -357,26 +407,32 @@ void Game::GetAIMove(AgentEnum agent)
 void Game::SaveGame()
 {
     const char BEGINNING_OF_GAME = 0xFE; // beginning-of-game flag
-    const char END_OF_GAME = 0xFF; // end-of-game flag
-    int gamesCount = 0; // number of games played
+    const char END_OF_GAME = 0xFF;       // end-of-game flag
+    int gamesCount = 0;                  // number of games played
 
     // Read the number of games played from file or initialize to zero
     {
-        std::ifstream countFile;
-        countFile.open("./db/games/count.dat", std::ios::binary);
-
-        if (!countFile)
+        if (!std::filesystem::exists("db/"))
         {
-            std::ofstream _countFile;
             std::filesystem::create_directory("db");
-            _countFile.open("./db/games/count.dat", std::ios::binary);
-            _countFile.write((char*)&gamesCount, sizeof(gamesCount));
-            _countFile.close();
+        }
+
+        if (!std::filesystem::exists("db/games/"))
+        {
+            std::filesystem::create_directory("db/games");
+        }
+
+        if (!std::filesystem::exists("db/games/count.dat"))
+        {
+            std::ofstream temp("db/games/count.dat", std::ios::binary);
+            temp.write((char *)&gamesCount, sizeof(gamesCount));
+            temp.close();
         }
         else
         {
-            countFile.read((char*)&gamesCount, sizeof(gamesCount));
-            countFile.close();
+            std::ifstream temp("db/games/count.dat", std::ios::binary);
+            temp.read((char *)&gamesCount, sizeof(gamesCount));
+            temp.close();
         }
     }
 
@@ -385,37 +441,36 @@ void Game::SaveGame()
 
     // Write game history to file
     {
-        std::ofstream file(fileName, std::ios::binary | std::ios::app);
-        file.put((char)m_State->m_Ruleset);
-        file.put(BEGINNING_OF_GAME); 
+        std::ofstream temp(fileName, std::ios::binary | std::ios::app);
+        temp.put((char)m_State->m_Ruleset);
+        temp.put(BEGINNING_OF_GAME);
         for (char move : history)
         {
-            file.put(move); // Write each move to file
+            temp.put(move); // Write each move to file
         };
-        file.put(END_OF_GAME);
-        file.close(); 
+        temp.put(END_OF_GAME);
+        temp.close();
     }
 
     std::cout << "Game saved successfully!\n";
 
     // Update games count and write it back to file
     {
-        gamesCount+=1; 
-        std::ofstream countFile;
-        countFile.open("./db/games/count.dat", std::ios::binary);
-        countFile.write((char*)&gamesCount, sizeof(gamesCount));
-        countFile.close();
+        gamesCount += 1;
+        std::ofstream temp("db/games/count.dat", std::ios::binary);
+        temp.write((char *)&gamesCount, sizeof(gamesCount));
+        temp.close();
     }
 }
 
 std::string Game::GetFileNameWithLeadingZeros(int fileName)
 {
-    std::string fileNameStr = ""; 
+    std::string fileNameStr = "";
     int fileNameLength = (int)std::to_string(fileName).size(); // Get length of original file name
-    for (int i = 0; i < 8 - fileNameLength; i++) // Add leading zeros to make total length 8 characters
+    for (int i = 0; i < 8 - fileNameLength; i++)               // Add leading zeros to make total length 8 characters
     {
         fileNameStr += "0";
     }
     fileNameStr += std::to_string(fileName); // Append original file name
-    return fileNameStr; // Return file name with leading zeros
+    return fileNameStr;                      // Return file name with leading zeros
 }

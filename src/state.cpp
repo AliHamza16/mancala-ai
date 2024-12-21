@@ -19,7 +19,7 @@ State::~State()
 {
 }
 
-void State::MutateBoard(const std::vector<char>& board)
+void State::MutateBoard(const std::vector<char> &board)
 {
     for (size_t i = 0; i < 14; ++i)
     {
@@ -28,15 +28,13 @@ void State::MutateBoard(const std::vector<char>& board)
     }
 }
 
-
-
 /**
  * @brief Initializes the game state.
  */
 void State::InitializeState()
 {
     m_Board.resize(14); // Resize the board vector to 14 elements
-    srand(time(0)); // Seed the random number generator
+    srand(time(0));     // Seed the random number generator
     for (size_t i = 0; i < 14; ++i)
     {
         // Initialize each slot in the board
@@ -45,7 +43,6 @@ void State::InitializeState()
     m_Turn = 0; // Set the initial turn to player 1
     m_Ruleset = 0;
 }
-
 
 /**
  * @brief Prints the current game state to the console.
@@ -67,20 +64,18 @@ void State::Print()
         std::cout << std::format(" [{0}{1}]", m_Board[i] < 10 ? " " : "", (int)m_Board[i]);
     };
     std::cout << std::format(" ({0}{1})", m_Board[6] < 10 ? " " : "", (int)m_Board[6]) << std::endl
-        << std::endl;
+              << std::endl;
 }
-
 
 /**
  * @brief Clears the stones from a specified pit.
  *
  * @param pit The index of the pit to clear.
  */
-void State::ClearPits(const char& pit)
+void State::ClearPits(const char &pit)
 {
     m_Board[pit] = 0; // Set the stones in the specified pit to zero
 };
-
 
 /**
  * @brief Clears the stones from pits within a specified range.
@@ -88,14 +83,13 @@ void State::ClearPits(const char& pit)
  * @param start The index of the starting pit (inclusive).
  * @param stop The index of the ending pit (exclusive).
  */
-void State::ClearPits(const char& start, const char& stop)
+void State::ClearPits(const char &start, const char &stop)
 {
     for (int i = start; i < stop; ++i)
     {
         m_Board[i] = 0; // Set the stones in each pit within the range to zero
     }
 };
-
 
 /**
  * @brief Calculates the total number of stones in pits within a specified range.
@@ -104,7 +98,7 @@ void State::ClearPits(const char& start, const char& stop)
  * @param stop The index of the ending pit (exclusive).
  * @return The total number of stones in the specified range of pits.
  */
-char State::TotalStones(const char& start, const char& stop) const
+char State::TotalStones(const char &start, const char &stop) const
 {
     char total = 0; // Initialize total stones counter
 
@@ -116,18 +110,16 @@ char State::TotalStones(const char& start, const char& stop) const
     return total; // Return the total number of stones
 };
 
-
 /**
  * @brief Finds the index of the pit opposite to the specified pit.
  *
  * @param pit The index of the pit.
  * @return The index of the pit opposite to the specified pit.
  */
-char State::OppositePit(const char& pit)
+char State::OppositePit(const char &pit)
 {
     return (12 - pit); // Calculate the index of the opposite pit
 };
-
 
 /**
  * @brief Finds the legal moves for the current player.
@@ -154,6 +146,17 @@ std::vector<char> State::LegalMoves() const
     return legalMoves; // Return vector of legal moves
 }
 
+std::string State::GetStateString(int depth) const
+{
+    std::string state_str;
+    for (size_t i = 0; i < 14; i++)
+    {
+        state_str += std::format("{0}{1}", m_Board[i] < 10 ? "0" : "", (int)m_Board[i]);
+    }
+    state_str += std::to_string(m_Turn);
+    state_str += std::to_string(depth);
+    return state_str;
+}
 
 /**
  * @brief Checks if a move is legal.
@@ -161,9 +164,9 @@ std::vector<char> State::LegalMoves() const
  * @param move The index of the pit to move stones from.
  * @return True if the move is legal, false otherwise.
  */
-bool State::IsLegal(const char& move)
+bool State::IsLegal(const char &move)
 {
-    for (auto& m : LegalMoves()) // Iterate through legal moves
+    for (auto &m : LegalMoves()) // Iterate through legal moves
     {
         if (m == move) // Check if the specified move is in the list of legal moves
         {
@@ -172,7 +175,6 @@ bool State::IsLegal(const char& move)
     }
     return false; // Return false if the move is not legal
 }
-
 
 /**
  * @brief Generates a random legal move.
@@ -183,11 +185,10 @@ bool State::IsLegal(const char& move)
  */
 char State::RandomMove()
 {
-    const std::vector<char> legalMoves = LegalMoves(); // Get the list of legal moves
+    const std::vector<char> legalMoves = LegalMoves();           // Get the list of legal moves
     const char move = legalMoves.at(rand() % legalMoves.size()); // Choose a random move from the legal moves
-    return move; // Return the randomly selected move
+    return move;                                                 // Return the randomly selected move
 }
-
 
 /**
  * @brief Makes a move in the game.
@@ -196,21 +197,24 @@ char State::RandomMove()
  *
  * @param move The index of the pit to move stones from.
  */
-void State::MakeMove(const char& move)
+void State::MakeMove(const char &move)
 {
     switch (m_Ruleset)
     {
-    case 0: {
-        ClassicalMancalaRuleset(move);// Apply the classical Mancala ruleset to make the move
-    }; break;
-    case 1: {
-        TurkishMancalaRuleset(move);// Apply the Turkish Mancala ruleset to make the move
-    }; break;
+    case 0:
+    {
+        ClassicalMancalaRuleset(move); // Apply the classical Mancala ruleset to make the move
+    };
+    break;
+    case 1:
+    {
+        TurkishMancalaRuleset(move); // Apply the Turkish Mancala ruleset to make the move
+    };
+    break;
     default:
         break;
     }
 }
-
 
 /**
  * @brief Applies the classical Mancala ruleset to make a move.
@@ -219,34 +223,34 @@ void State::MakeMove(const char& move)
  *
  * @param move The index of the pit to move stones from.
  */
-void State::ClassicalMancalaRuleset(const char& move)
+void State::ClassicalMancalaRuleset(const char &move)
 {
     char stoneCount = m_Board[move]; // Get the number of stones in the selected pit
-    ClearPits(move); // Clear the selected pit
+    ClearPits(move);                 // Clear the selected pit
 
     // Define variables for pits and stores based on current player's turn
     const char ourStore = m_Turn == 0 ? 6 : 13; // Index of our store
-    const char ourStart = m_Turn == 0 ? 0 : 7; // Index of our starting pit
-    const char ourStop = m_Turn == 0 ? 6 : 13; // Index of our stopping pit
+    const char ourStart = m_Turn == 0 ? 0 : 7;  // Index of our starting pit
+    const char ourStop = m_Turn == 0 ? 6 : 13;  // Index of our stopping pit
     const char oppStore = m_Turn == 0 ? 13 : 6; // Index of opponent's store
-    const char oppStart = m_Turn == 0 ? 7 : 0; // Index of opponent's starting pit
-    const char oppStop = m_Turn == 0 ? 13 : 6; // Index of opponent's stopping pit
+    const char oppStart = m_Turn == 0 ? 7 : 0;  // Index of opponent's starting pit
+    const char oppStop = m_Turn == 0 ? 13 : 6;  // Index of opponent's stopping pit
 
     char currentPit = (move + 1) % 14; // Index of the next pit to distribute stones to
-    char lastPit = currentPit; // Initialize the last pit visited
+    char lastPit = currentPit;         // Initialize the last pit visited
 
     // Distribute stones to pits according to Mancala rules
     while (stoneCount > 0)
     {
         ++m_Board[currentPit]; // Place a stone in the current pit
-        --stoneCount; // Decrement the remaining stones
+        --stoneCount;          // Decrement the remaining stones
 
         lastPit = currentPit; // Update the last pit visited
 
         if (currentPit == oppStore) // If the last stone lands in the opponent's store
         {
             --m_Board[currentPit]; // Remove the stone from the opponent's store
-            ++stoneCount; // Increment the remaining stones
+            ++stoneCount;          // Increment the remaining stones
         }
 
         currentPit = (currentPit + 1) % 14; // Move to the next pit
@@ -263,8 +267,8 @@ void State::ClassicalMancalaRuleset(const char& move)
         {
             // If the last stone lands in an empty pit on our side and the opposite pit is not empty
             m_Board[ourStore] += m_Board[OppositePit(lastPit)] + 1; // Move stones to our store
-            ClearPits(lastPit); // Clear the last pit
-            ClearPits(OppositePit(lastPit)); // Clear the opposite pit
+            ClearPits(lastPit);                                     // Clear the last pit
+            ClearPits(OppositePit(lastPit));                        // Clear the opposite pit
         }
     }
 
@@ -276,16 +280,15 @@ void State::ClassicalMancalaRuleset(const char& move)
         if (ourTotal == 0) // If we have no stones left on our side
         {
             m_Board[oppStore] += oppTotal; // Move opponent's stones to their store
-            ClearPits(oppStart, oppStop); // Clear opponent's pits
+            ClearPits(oppStart, oppStop);  // Clear opponent's pits
         }
         else if (oppTotal == 0) // If opponent has no stones left on their side
         {
             m_Board[ourStore] += ourTotal; // Move our stones to our store
-            ClearPits(ourStart, ourStop); // Clear our pits
+            ClearPits(ourStart, ourStop);  // Clear our pits
         }
     }
 }
-
 
 /**
  * @brief Applies the Turkish Mancala ruleset to make a move.
@@ -294,21 +297,21 @@ void State::ClassicalMancalaRuleset(const char& move)
  *
  * @param move The index of the pit to move stones from.
  */
-void State::TurkishMancalaRuleset(const char& move)
+void State::TurkishMancalaRuleset(const char &move)
 {
     char stoneCount = m_Board[move]; // Get the number of stones in the selected pit
-    ClearPits(move); // Clear the selected pit
+    ClearPits(move);                 // Clear the selected pit
 
     // Define variables for pits and stores based on current player's turn
     const char ourStore = m_Turn == 0 ? 6 : 13; // Index of our store
-    const char ourStart = m_Turn == 0 ? 0 : 7; // Index of our starting pit
-    const char ourStop = m_Turn == 0 ? 6 : 13; // Index of our stopping pit
+    const char ourStart = m_Turn == 0 ? 0 : 7;  // Index of our starting pit
+    const char ourStop = m_Turn == 0 ? 6 : 13;  // Index of our stopping pit
     const char oppStore = m_Turn == 0 ? 13 : 6; // Index of opponent's store
-    const char oppStart = m_Turn == 0 ? 7 : 0; // Index of opponent's starting pit
-    const char oppStop = m_Turn == 0 ? 13 : 6; // Index of opponent's stopping pit
+    const char oppStart = m_Turn == 0 ? 7 : 0;  // Index of opponent's starting pit
+    const char oppStop = m_Turn == 0 ? 13 : 6;  // Index of opponent's stopping pit
 
     char currentPit = (move + 1) % 14; // Index of the next pit to distribute stones to
-    char lastPit = currentPit; // Initialize the last pit visited
+    char lastPit = currentPit;         // Initialize the last pit visited
 
     if (stoneCount > 1)
     {
@@ -319,14 +322,14 @@ void State::TurkishMancalaRuleset(const char& move)
     while (stoneCount > 0)
     {
         ++m_Board[currentPit]; // Place a stone in the current pit
-        --stoneCount; // Decrement the remaining stones
+        --stoneCount;          // Decrement the remaining stones
 
         lastPit = currentPit; // Update the last pit visited
 
         if (currentPit == oppStore) // If the last stone lands in the opponent's store
         {
             --m_Board[currentPit]; // Remove the stone from the opponent's store
-            ++stoneCount; // Increment the remaining stones
+            ++stoneCount;          // Increment the remaining stones
         }
 
         currentPit = (currentPit + 1) % 14; // Move to the next pit
@@ -343,8 +346,8 @@ void State::TurkishMancalaRuleset(const char& move)
         {
             // If the last stone lands in an empty pit on our side and the opposite pit is not empty
             m_Board[ourStore] += m_Board[OppositePit(lastPit)] + 1; // Move stones to our store
-            ClearPits(lastPit); // Clear the last pit
-            ClearPits(OppositePit(lastPit)); // Clear the opposite pit
+            ClearPits(lastPit);                                     // Clear the last pit
+            ClearPits(OppositePit(lastPit));                        // Clear the opposite pit
         }
     }
 
@@ -352,7 +355,7 @@ void State::TurkishMancalaRuleset(const char& move)
     {
         if (m_Board[lastPit] % 2 == 0 && (lastPit >= oppStart && lastPit < oppStop) && m_Board[lastPit] != 0)
         {
-            m_Board[ourStore] += m_Board[lastPit]; 
+            m_Board[ourStore] += m_Board[lastPit];
             ClearPits(lastPit); // Clear the last pit
         }
     }
@@ -365,33 +368,30 @@ void State::TurkishMancalaRuleset(const char& move)
         if (ourTotal == 0) // If we have no stones left on our side
         {
             m_Board[ourStore] += oppTotal; // Move opponent's stones to our store
-            ClearPits(oppStart, oppStop); // Clear opponent's pits
+            ClearPits(oppStart, oppStop);  // Clear opponent's pits
         }
         else if (oppTotal == 0) // If opponent has no stones left on their side
         {
             m_Board[oppStore] += ourTotal; // Move our stones to opponent's store
-            ClearPits(ourStart, ourStop); // Clear our pits
+            ClearPits(ourStart, ourStop);  // Clear our pits
         }
     }
 }
-
-
 
 /**
  * @brief Changes the current player's turn.
  *
  * @param turn The index of the player whose turn it is (0 or 1).
  */
-void State::ChangeTurn(const char& turn)
+void State::ChangeTurn(const char &turn)
 {
     m_Turn = turn; // Set the current player's turn
 }
 
-void State::ChangeRuleset(const char& ruleset)
+void State::ChangeRuleset(const char &ruleset)
 {
     m_Ruleset = ruleset;
 }
-
 
 /**
  * @brief Generates the next game state after making a move.
@@ -399,16 +399,15 @@ void State::ChangeRuleset(const char& ruleset)
  * @param move The index of the pit to move stones from.
  * @return The next game state after making the move.
  */
-State State::NextState(const char& move) const
+State State::NextState(const char &move) const
 {
-    State* state = new State(); // Create a new state object
-    state->m_Turn = m_Turn; // Set the turn of the new state
-    state->m_Board = m_Board; // Copy the board of the current state
+    State *state = new State(); // Create a new state object
+    state->m_Turn = m_Turn;     // Set the turn of the new state
+    state->m_Board = m_Board;   // Copy the board of the current state
     state->m_Ruleset = m_Ruleset;
     state->MakeMove(move); // Make the specified move in the new state
-    return *state; // Return the new state
+    return *state;         // Return the new state
 }
-
 
 /**
  * @brief Determines the current state of the game.
@@ -426,7 +425,6 @@ GameStateEnum State::GameState() const
         return PLAYING; // Return PLAYING if game is still ongoing
     }
 }
-
 
 /**
  * @brief Determines the winner of the game.
